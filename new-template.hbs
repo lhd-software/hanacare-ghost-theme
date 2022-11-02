@@ -1,0 +1,251 @@
+      <!doctype html>
+      <html lang="{{@site.locale}}">
+      
+      <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- font awesome 5 free -->
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+        />
+
+        <!-- Bootstrap 5 -->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous"
+        />
+          <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  
+        <!-- Your Custom CSS file that will include your blocks CSS -->
+    <link rel="stylesheet" type="text/css" href="{{asset "css/screen.css"}}" />      
+        <title>{{@site.title}}</title>
+      </head>
+      
+      <body>
+
+        <!-- Put the blocks HTML here -->
+<header class="hero container-fluid">
+  <div class="hero__content container mx-auto">
+    <!-- I'm putting the nav inside this "fixed-nav-container" to fix some issues happens on scroll -->
+    <div class="fixed-nav-container">
+      {{navigation}}
+    </div>
+    {{#is "home"}}
+    <div class="hero__body">
+      <div class="row px-0 mx-0">
+        <div class="col-lg-6 px-0 mx-0">
+          <h1 class="hero__title mb-4">Learning Experiences Made<span class="highlight">Easy And Social</span></h1>
+          <p class="hero__paragraph mx-0 mb-5">Increase learner engagement &amp; knowledge retention in higher education and corporate training settings.</p>
+          <div class="hero__btns-container"><a class="hero__btn btn btn-primary mb-2 mb-lg-0 mx-1 mx-lg-2" href="#!">Get access for $4.9</a><a class="hero__btn btn btn-secondary mb-2 mb-lg-0 mx-1 mx-lg-2" href="#!">Start your 14-days free</a></div>
+        </div>
+        <div class="col-lg-6 mt-5 mt-lg-0">
+          <div class="hero__img-container"><img class="hero__img w-100" src="https://app.frontendor.com/version3/assets/ui-library/Blocks/blocks__assets/images/MessyDoodle.svg"></div>
+        </div>
+      </div>
+    </div>
+    {{/is}}
+  </div>
+</header>
+<script src="https://unpkg.com/tua-body-scroll-lock"></script>
+<script>
+  /* Hero Menu & Dropdown's JavaScript */
+  var showDropdown = function(e) {
+    e.currentTarget.classList.add("hero-nav__item--show-dropdown");
+  };
+
+  var hideDropdown = function(e) {
+    e.currentTarget.classList.remove("hero-nav__item--show-dropdown");
+  };
+
+  var toggleDropdown = function(e) {
+    e.currentTarget.classList.toggle("hero-nav__item--show-dropdown");
+  };
+
+  function setupDropdowns(mediaQuery) {
+    document
+      .querySelectorAll(".hero-nav__item--with-dropdown")
+      .forEach(function(liElement) {
+        if (mediaQuery.matches) {
+          var liElclassList = liElement.classList;
+          if (
+            !liElclassList.contains("hero-nav__item--dropdown-left") ||
+            !liElclassList.contains("hero-nav__item--dropdown-right")
+          ) {
+            var linkWidth = liElement.getBoundingClientRect().width;
+            liElement.querySelector(".dropdown").style.transform =
+              "translateX(calc(-50% + " + linkWidth / 2 + "px))";
+          }
+
+          liElement.addEventListener("mouseenter", showDropdown);
+          liElement.addEventListener("mouseleave", hideDropdown);
+
+          /* If someone resize his browser to small screen */
+          var heroNavLink = liElement.querySelector(".hero-nav__link");
+          heroNavLink.removeEventListener("click", toggleDropdown);
+        } else {
+          /* if someone resize his browser to large screen */
+          liElement.removeEventListener("mouseenter", showDropdown);
+          liElement.removeEventListener("mouseleave", hideDropdown);
+          liElement.querySelector(".dropdown").style.transform = "";
+
+          liElement.addEventListener("click", toggleDropdown);
+        }
+      });
+  }
+
+  var mediaQuery = window.matchMedia("(min-width: 992px)");
+  /* setup dropdowns on page load */
+  setupDropdowns(mediaQuery);
+  mediaQuery.addListener(function(mediaQuery) {
+    setupDropdowns(mediaQuery);
+
+    if (mediaQuery.matches) {
+      var heroMenu = document.querySelector("#hero-menu");
+      heroMenu.style.height = "";
+      bodyScrollLock.unlock(heroMenu);
+    }
+  });
+
+  /* Toggle Menu on mobile */
+  var heroMenu = document.querySelector("#hero-menu");
+  document.querySelector("[close-nav-menu]").onclick = function(e) {
+    heroMenu.classList.toggle("ft-menu--js-show");
+    bodyScrollLock.unlock(heroMenu);
+  };
+
+  document.querySelector("[open-nav-menu]").onclick = function(e) {
+    heroMenu.classList.toggle("ft-menu--js-show");
+    heroMenu.style.height = window.innerHeight + "px";
+    bodyScrollLock.lock(heroMenu);
+  };
+  /* Close mobile Menu & scroll smoothly */
+  function closeMenuAndGoTo(query) {
+    document.querySelector("#hero-menu").classList.toggle("ft-menu--js-show");
+    setTimeout(() => {
+      const element = document.querySelector(query);
+      window.scrollTo({
+        top: element.getBoundingClientRect().top,
+        behavior: "smooth",
+      });
+    }, 250);
+  }
+
+  document
+    .querySelector("#hero-menu")
+    .querySelectorAll("[href*='#']")
+    .forEach(function(link) {
+      link.onclick = function(event) {
+        event.preventDefault();
+        closeMenuAndGoTo(link.getAttribute("href"));
+      };
+    });
+
+  /* Make the navigation sticky */
+  var nav = document.querySelector(".hero-nav");
+  window.onscroll = function(e) {
+    var logoElement = document.querySelector("[change-src-onscroll]");
+    if (window.scrollY > nav.getBoundingClientRect().height) {
+      if (!nav.classList.contains("hero-nav--is-sticky")) {
+        window.logoSrc = logoElement.getAttribute("src");
+        logoElement.setAttribute(
+          "src",
+          logoElement.getAttribute("change-src-onscroll")
+        );
+        logoElement.setAttribute("change-src-onscroll", logoSrc);
+      }
+
+      nav.classList.add("hero-nav--is-sticky");
+    } else if (window.scrollY === 0) {
+      if (nav.classList.contains("hero-nav--is-sticky")) {
+        window.logoSrc = logoElement.getAttribute("src");
+        logoElement.setAttribute(
+          "src",
+          logoElement.getAttribute("change-src-onscroll")
+        );
+        logoElement.setAttribute("change-src-onscroll", logoSrc);
+      }
+
+      nav.classList.remove("hero-nav--is-sticky");
+    }
+  };
+</script>
+
+{{{body}}}
+
+
+<div class="block-41 py-5">
+  <div class="container px-3">
+    <div class="row px-2">
+      <div class="col-sm-6 col-lg-4 mb-4 mb-lg-0">
+                    {{#if @site.logo}}
+            <img class="block-41__logo mb-3" src="{{@site.logo}}" change-src-onscroll="{{@site.logo}}" alt="{{@site.title}}">
+            {{else}}
+                {{@site.title}}
+            {{/if}}
+        
+        <p class="block-41__brand-story mb-0">
+            Mọi người đều khỏe mạnh và hạnh phúc
+        </p>
+      </div>
+      <div class="col-md-3 col-lg-2 mb-sm-4 mb-lg-0">
+        <ul class="block-41__links-list list-unstyled p-0">
+          <li class="block-41__li-heading">Về HanaCare</li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Hành trình HanaCare</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Tại sao là HanaCare</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Đội ngũ HanaCare</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 col-lg-2 mb-sm-4 mb-lg-0">
+        <ul class="block-41__links-list list-unstyled p-0">
+          <li class="block-41__li-heading">Đối tác</li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Dành cho nhà tài trợ</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Dịch vụ tích hợp</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Thương mại điện tử</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 col-lg-2 mb-sm-4 mb-lg-0">
+        <ul class="block-41__links-list list-unstyled p-0">
+          <li class="block-41__li-heading">Blog</li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Sức khỏe</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Thực phẩm</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Tinh thần</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 col-lg-2 mb-sm-4 mb-lg-0">
+        <ul class="block-41__links-list list-unstyled p-0">
+          <li class="block-41__li-heading">Thông tin</li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Hướng dẫn sử dụng</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Điều kiện sử dụng</a></li>
+          <li class="block-41__li"><a href="#!" class="block-41__li-link">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <hr class="block-41__divider">
+  <div class="container col-10">
+    <div class="row px-2">
+      <div class="flex-grow-1 col-4">
+        <ul class="block-41__extra-links d-flex list-unstyled p-0 col-6 mx-auto mx-xxl-1 mx-lg-1 mx-md-1 mx-sm-auto">
+          <li class="mx-2"><a href="#!" class="block-41__extra-link m-0"><i class="fab fa-twitter"></i></a></li>
+          <li class="mx-2"><a href="#!" class="block-41__extra-link m-0"><i class="fab fa-instagram"></i></a></li>
+          <li class="mx-2"><a href="#!" class="block-41__extra-link m-0"><i class="fas fa-envelope"></i></a></li>
+        </ul>
+      </div>
+      <p class="block-41__copyrights col-6">© 2022 HanaCare Super App. All Rights Reserved.</p>
+    </div>
+  </div>
+</div>
+
+        <!-- Put the blocks HTML here -->
+<!--Popper.js first, then Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+      </body>
+      
+      </html>
